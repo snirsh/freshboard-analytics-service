@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import boards, companies, jobs
+from app.api.routes import boards, companies, jobs, health
 
 router = APIRouter()
 router.include_router(boards.router, tags=["boards"], prefix="/boards")
