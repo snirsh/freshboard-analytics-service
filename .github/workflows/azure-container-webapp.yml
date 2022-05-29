@@ -27,7 +27,7 @@
 name: Build and deploy a container to an Azure Web App
 
 env:
-  AZURE_WEBAPP_NAME: fershboard-analytics-service  # set this to the name of your Azure Web App
+  AZURE_WEBAPP_NAME: freshboard-analytics-service # set this to the name of your Azure Web App
 
 on:
   push:
@@ -57,7 +57,9 @@ jobs:
 
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
+      - name: Log in to registry
+        # This is where you will update the PAT to GITHUB_TOKEN
+        run: echo "${{ secrets.PAT_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
@@ -77,11 +79,10 @@ jobs:
     steps:
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-name: 'freshboard-analytics-service'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: 'ghcr.io/${{ env.REPO }}:${{ github.sha }}'
